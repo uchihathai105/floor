@@ -12,6 +12,7 @@ import 'package:floor_generator/processor/queryable_processor.dart';
 import 'package:floor_generator/value_object/entity.dart';
 import 'package:floor_generator/value_object/field.dart';
 import 'package:floor_generator/value_object/foreign_key.dart';
+import 'package:floor_generator/value_object/fts.dart';
 import 'package:floor_generator/value_object/index.dart';
 import 'package:floor_generator/value_object/primary_key.dart';
 import 'package:floor_generator/value_object/type_converter.dart';
@@ -45,6 +46,7 @@ class EntityProcessor extends QueryableProcessor<Entity> {
       _getForeignKeys(),
       _getIndices(fields, name),
       _getWithoutRowid(),
+      _getFts(),
       getConstructor(fields),
       _getValueMapping(fields),
     );
@@ -109,6 +111,21 @@ class EntityProcessor extends QueryableProcessor<Entity> {
           );
         })?.toList() ??
         [];
+  }
+
+  @nullable
+  Fts _getFts() {
+    var fts = classElement
+        .getAnnotation(annotations.Entity)
+        .getField(AnnotationField.entityFts);
+
+    if (fts.isNull) {
+      return null;
+    } else {
+      final type = fts.getField(FtsField.type).toStringValue();
+      final tokenizer = fts.getField(FtsField.tokenizer).toStringValue();
+      return Fts(type, tokenizer);
+    }
   }
 
   @nonNull

@@ -15,6 +15,7 @@ abstract class AnnotationField {
   static const entityIndices = 'indices';
   static const entityPrimaryKeys = 'primaryKeys';
   static const entityWithoutRowid = 'withoutRowid';
+  static const entityFts = 'fts';
 
   static const viewName = 'viewName';
   static const viewQuery = 'query';
@@ -28,6 +29,11 @@ abstract class ForeignKeyField {
   static const parentColumns = 'parentColumns';
   static const onUpdate = 'onUpdate';
   static const onDelete = 'onDelete';
+}
+
+abstract class FtsField {
+  static const type = 'type';
+  static const tokenizer = 'tokenizer';
 }
 
 abstract class IndexField {
