@@ -1,6 +1,5 @@
 import 'package:floor_annotation/src/foreign_key.dart';
 import 'package:floor_annotation/src/index.dart';
-
 import 'package:floor_annotation/src/fts.dart';
 
 /// Marks a class as a database entity (table).
@@ -30,7 +29,7 @@ class Entity {
     this.foreignKeys = const [],
     this.primaryKeys = const [],
     this.withoutRowid = false,
-    this.fts
+    this.fts,
   });
 }
 

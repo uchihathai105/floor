@@ -9,10 +9,7 @@ class Fts {
   /// By default, [FtsTokenizer.simple] is used.
   final String tokenizer;
 
-  const Fts({
-    this.type = FtsType.fts3,
-    this.tokenizer = FtsTokenizer.simple
-  });
+  const Fts({this.type = FtsType.fts3, this.tokenizer = FtsTokenizer.simple});
 }
 
 abstract class FtsType {
