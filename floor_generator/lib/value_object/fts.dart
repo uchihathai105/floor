@@ -1,6 +1,3 @@
-import 'package:collection/collection.dart';
-import 'package:floor_generator/misc/annotations.dart';
-
 class Fts {
   final String type;
   final String tokenizer;
@@ -19,9 +16,7 @@ class Fts {
           tokenizer == other.tokenizer;
 
   @override
-  int get hashCode =>
-      type.hashCode ^
-      tokenizer.hashCode;
+  int get hashCode => type.hashCode ^ tokenizer.hashCode;
 
   @override
   String toString() {
