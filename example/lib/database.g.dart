@@ -62,6 +62,8 @@ class _$FlutterDatabase extends FlutterDatabase {
 
   TaskDao _taskDaoInstance;
 
+  MailDao _mailDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -81,6 +83,8 @@ class _$FlutterDatabase extends FlutterDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Task` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `message` TEXT)');
+        await database.execute(
+            'CREATE VIRTUAL TABLE IF NOT EXISTS `mail` USING fts4(`rowid` INTEGER, `text` TEXT, PRIMARY KEY (`rowid`), tokenize=icu)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -91,6 +95,11 @@ class _$FlutterDatabase extends FlutterDatabase {
   @override
   TaskDao get taskDao {
     return _taskDaoInstance ??= _$TaskDao(database, changeListener);
+  }
+
+  @override
+  MailDao get mailDao {
+    return _mailDaoInstance ??= _$MailDao(database, changeListener);
   }
 }
 
@@ -182,5 +191,99 @@ class _$TaskDao extends TaskDao {
   @override
   Future<void> deleteTasks(List<Task> tasks) async {
     await _taskDeletionAdapter.deleteList(tasks);
+  }
+}
+
+class _$MailDao extends MailDao {
+  _$MailDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database, changeListener),
+        _mailInsertionAdapter = InsertionAdapter(
+            database,
+            'mail',
+            (Mail item) =>
+                <String, dynamic>{'rowid': item.id, 'text': item.text},
+            changeListener),
+        _mailUpdateAdapter = UpdateAdapter(
+            database,
+            'mail',
+            ['rowid'],
+            (Mail item) =>
+                <String, dynamic>{'rowid': item.id, 'text': item.text},
+            changeListener),
+        _mailDeletionAdapter = DeletionAdapter(
+            database,
+            'mail',
+            ['rowid'],
+            (Mail item) =>
+                <String, dynamic>{'rowid': item.id, 'text': item.text},
+            changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _mailMapper = (Map<String, dynamic> row) =>
+      Mail(row['rowid'] as int, row['text'] as String);
+
+  final InsertionAdapter<Mail> _mailInsertionAdapter;
+
+  final UpdateAdapter<Mail> _mailUpdateAdapter;
+
+  final DeletionAdapter<Mail> _mailDeletionAdapter;
+
+  @override
+  Future<Mail> findMailById(int id) async {
+    return _queryAdapter.query('SELECT * FROM mailinfo WHERE id = ?',
+        arguments: <dynamic>[id], mapper: _mailMapper);
+  }
+
+  @override
+  Future<Mail> findMailByKey(String key) async {
+    return _queryAdapter.query('SELECT * FROM mailinfo WHERE text match "?"',
+        arguments: <dynamic>[key], mapper: _mailMapper);
+  }
+
+  @override
+  Future<List<Mail>> findAllMails() async {
+    return _queryAdapter.queryList('SELECT * FROM mailinfo',
+        mapper: _mailMapper);
+  }
+
+  @override
+  Stream<List<Mail>> findAllMailsAsStream() {
+    return _queryAdapter.queryListStream('SELECT * FROM mailinfo',
+        queryableName: 'mail', isView: false, mapper: _mailMapper);
+  }
+
+  @override
+  Future<void> insertMail(Mail mailInfo) async {
+    await _mailInsertionAdapter.insert(mailInfo, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> insertMails(List<Mail> mailInfo) async {
+    await _mailInsertionAdapter.insertList(mailInfo, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateMail(Mail mailInfo) async {
+    await _mailUpdateAdapter.update(mailInfo, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateMails(List<Mail> mailInfo) async {
+    await _mailUpdateAdapter.updateList(mailInfo, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteMail(Mail mailInfo) async {
+    await _mailDeletionAdapter.delete(mailInfo);
+  }
+
+  @override
+  Future<void> deleteMails(List<Mail> mailInfo) async {
+    await _mailDeletionAdapter.deleteList(mailInfo);
   }
 }
