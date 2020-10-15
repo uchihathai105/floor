@@ -1,7 +1,6 @@
 import 'package:example/database.dart';
 import 'package:example/task.dart';
 import 'package:example/task_dao.dart';
-import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {

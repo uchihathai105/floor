@@ -6,7 +6,7 @@ abstract class MailDao {
   @Query('SELECT * FROM mailinfo WHERE id = :id')
   Future<Mail> findMailById(int id);
 
-  @Query("SELECT * FROM mailinfo WHERE text match \":key\"")
+  @Query('SELECT * FROM mailinfo WHERE text match \":key\"')
   Future<Mail> findMailByKey(String key);
 
   @Query('SELECT * FROM mailinfo')
