@@ -52,7 +52,7 @@ class Entity extends Queryable {
       return 'CREATE TABLE IF NOT EXISTS `$name` (${databaseDefinition.join(', ')})$withoutRowidClause';
     } else {
       final ftsType = fts.type ?? '';
-      final ftsTokenizer = fts.tokenizer ?? "";
+      final ftsTokenizer = fts.tokenizer ?? '';
       return 'CREATE VIRTUAL TABLE IF NOT EXISTS `$name` USING $ftsType(${databaseDefinition.join(', ')}, tokenize=$ftsTokenizer)$withoutRowidClause';
     }
   }

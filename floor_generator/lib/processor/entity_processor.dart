@@ -115,7 +115,7 @@ class EntityProcessor extends QueryableProcessor<Entity> {
 
   @nullable
   Fts _getFts() {
-    var fts = classElement
+    final fts = classElement
         .getAnnotation(annotations.Entity)
         .getField(AnnotationField.entityFts);
 
