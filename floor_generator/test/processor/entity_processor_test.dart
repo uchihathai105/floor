@@ -4,6 +4,7 @@ import 'package:floor_generator/processor/entity_processor.dart';
 import 'package:floor_generator/processor/field_processor.dart';
 import 'package:floor_generator/value_object/entity.dart';
 import 'package:floor_generator/value_object/foreign_key.dart';
+import 'package:floor_generator/value_object/fts.dart';
 import 'package:floor_generator/value_object/index.dart';
 import 'package:floor_generator/value_object/primary_key.dart';
 import 'package:source_gen/source_gen.dart';
@@ -44,6 +45,7 @@ void main() {
       foreignKeys,
       indices,
       false,
+      null,
       constructor,
       valueMapping,
     );
@@ -81,6 +83,7 @@ void main() {
       foreignKeys,
       indices,
       false,
+      null,
       constructor,
       valueMapping,
     );
@@ -138,6 +141,37 @@ void main() {
     });
   });
 
+  group('fts keys', () {
+    test('fts key with fts3', () async {
+      final classElements = await _createClassElements('''
+        
+        @Entity(
+          fts: Fts(
+              type: FtsType.fts4,
+              tokenizer: FtsTokenizer.porter,
+            ),
+        )
+        class MailInfo {
+          @primaryKey
+          @ColumnInfo(name: 'rowid')
+          final int id;
+        
+          final String text;
+        
+          MailInfo(this.id, this.text);
+        }
+    ''');
+
+      final actual = EntityProcessor(classElements[0]).process().fts;
+
+      final expected = Fts(
+        'fts4',
+        'porter',
+      );
+      expect(actual, equals(expected));
+    });
+  });
+
   test('Process entity with "WITHOUT ROWID"', () async {
     final classElement = await createClassElement('''
       @Entity(withoutRowid: true)
@@ -169,6 +203,7 @@ void main() {
       foreignKeys,
       indices,
       true,
+      null,
       constructor,
       "<String, dynamic>{'id': item.id, 'name': item.name}",
     );

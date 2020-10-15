@@ -270,6 +270,7 @@ void main() {
       [], // foreignKeys,
       [], // indices,
       false, // withoutRowid,
+      null,
       '', // constructor
       '', // valueMapping
     );
