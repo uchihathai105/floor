@@ -84,7 +84,7 @@ class _$FlutterDatabase extends FlutterDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Task` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `message` TEXT)');
         await database.execute(
-            'CREATE VIRTUAL TABLE IF NOT EXISTS `mail` USING fts4(`rowid` INTEGER, `text` TEXT, PRIMARY KEY (`rowid`), tokenize=icu)');
+            'CREATE VIRTUAL TABLE IF NOT EXISTS `mail` USING fts4(`rowid` INTEGER, `text` TEXT, PRIMARY KEY (`rowid`), tokenize=porter)');
 
         await callback?.onCreate?.call(database, version);
       },

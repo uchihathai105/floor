@@ -2,7 +2,7 @@ import 'package:floor/floor.dart';
 
 @Entity(
     tableName: 'mail',
-    fts: Fts(type: FtsType.fts4, tokenizer: FtsTokenizer.icu))
+    fts: Fts(type: FtsType.fts4, tokenizer: FtsTokenizer.porter))
 class Mail {
   @PrimaryKey()
   @ColumnInfo(name: 'rowid')
