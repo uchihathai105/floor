@@ -45,9 +45,9 @@ void main() {
       foreignKeys,
       indices,
       false,
-      null,
       constructor,
       valueMapping,
+      null,
     );
     expect(actual, equals(expected));
   });
@@ -83,9 +83,9 @@ void main() {
       foreignKeys,
       indices,
       false,
-      null,
       constructor,
       valueMapping,
+      null,
     );
     expect(actual, equals(expected));
   });
@@ -162,7 +162,7 @@ void main() {
         }
     ''');
 
-      final actual = EntityProcessor(classElements[0]).process().fts;
+      final actual = EntityProcessor(classElements[0], {}).process().fts;
 
       final expected = Fts(
         'fts4',
@@ -203,9 +203,9 @@ void main() {
       foreignKeys,
       indices,
       true,
-      null,
       constructor,
       "<String, dynamic>{'id': item.id, 'name': item.name}",
+      null,
     );
     expect(actual, equals(expected));
   });
